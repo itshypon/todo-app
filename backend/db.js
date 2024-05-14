@@ -5,9 +5,9 @@
         completed: boolean
     }
 */
-
+const mongodbURI = process.env.MONGODB_URI;
 const mongoose = require("mongoose");
-mongoose.connect('mongodb+srv://hypon:hypon@cluster0.xlzxfct.mongodb.net/todos');
+mongoose.connect(mongodbURI);
 const todoSchema = mongoose.Schema({
     title: String,
     description: String,

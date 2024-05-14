@@ -1,11 +1,20 @@
 const express = require('express')
 const types = require('./types')
+const { todo } = require('./db')
+const cors = require('cors')
 const app = express()
 const port = 3000
 
 app.use(express.json())
+app.use(cors())
 
-app.get("/todo", function(req, res){
+app.get("/todos", async function(req, res){
+    const todos = await todo.find();
+    res.json({todos});
+    
+})
+
+app.post("/todo", async function(req, res){
     const createPayload = req.body;
     const parsedPayload = types.createTodo.safeParse(createPayload);
     if(!parsedPayload.success){
@@ -16,15 +25,36 @@ app.get("/todo", function(req, res){
     }
 
     //put in mongodb
+    await todo.create({
+        title: createPayload.title,
+        description: createPayload.description,
+        completed: false
+    })
 
+    res.json({
+        msg: "Todo Created"
+    })
 })
 
-app.post("/todos", function(req, res){
-    
-})
+app.put("/completed", async function(req, res){
+    const updatePayload = req.body;
+    const parsedPayload = types.createTodo.safeParse(updatePayload);
+    if(!parsedPayload.success){
+        res.status(411).json({
+            msg: "You sent the wrong inputs"
+        })
+        return;
+    }
 
-app.put("/completed", function(req, res){
-    
+    await todo.update({
+        _id: req.body.id
+    }, {
+        completed: true
+    })
+    res.json({
+        msg: "Todo marked as completed"
+    })
+
 })
 
 app.listen(port, ()=>{

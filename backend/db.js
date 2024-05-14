@@ -5,9 +5,10 @@
         completed: boolean
     }
 */
-const mongodbURI = process.env.MONGODB_URI;
+require('dotenv').config();
+const pass = process.env.PASS;
 const mongoose = require("mongoose");
-mongoose.connect(mongodbURI);
+mongoose.connect('mongodb+srv://hypon:'+pass+'@cluster0.xlzxfct.mongodb.net/todos');
 const todoSchema = mongoose.Schema({
     title: String,
     description: String,
